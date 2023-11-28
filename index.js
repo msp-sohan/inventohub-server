@@ -34,7 +34,7 @@ app.use('/', salesRoutes);
 app.use('/', paymentRoutes);
 
 // Check the Server Up or Down
-app.get('/health', (req, res) => {
+app.get('/', (req, res) => {
 	res.send('InventoHub Server is Running....');
 });
 
