@@ -22,9 +22,9 @@ View the client-side code: [InventoHub Client Repository](https://github.com/msp
 
 ## Folder Structure
 
--  `config`: Configuration files for the server.
+-  `controllers`: All Api Route Controller is here.
 -  `middleware`: Custom middleware functions.
 -  `models`: MongoDB schema models for inventory and user data.
 -  `routes`: Route handlers for different endpoints (e.g., authentication, product management).
--  `utils`: Utility functions.
+-  `db`: Connecting Mongodb with server.
 -  `index.js`: Main entry point for the application.
