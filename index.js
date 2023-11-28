@@ -9,7 +9,7 @@ const morgan = require('morgan');
 
 // middleware
 const corsOptions = {
-	origin: ['http://localhost:5173', 'http://localhost:5174'],
+	origin: ['http://localhost:5173', 'https://inventohub.netlify.app'],
 	credentials: true,
 	optionSuccessStatus: 200,
 };
