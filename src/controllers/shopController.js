@@ -1,8 +1,10 @@
 const ShopCollection = require('../models/Shop');
-const User = require('../models/User');
+const UsersCollection = require('../models/User');
 
 // Get All Shops
 const getAllShop = async (req, res) => {
+	const email = req.query.email;
+	console.log(email);
 	try {
 		const result = await ShopCollection.find();
 		res.send(result);
@@ -12,35 +14,35 @@ const getAllShop = async (req, res) => {
 	}
 };
 
-// Save User Data in Database
+// Save Shop Data in Database
 const saveShop = async (req, res) => {
-	const shop = req.body;
-	const userEmail = shop?.shopOwnerEmail;
+	const shopData = req.body;
+	const email = shopData?.email;
 
 	// Check if the user already has a shop
-	const existingUser = await User.findOne({ email: userEmail });
+	const existingUser = await UsersCollection.findOne({ email });
 	if (existingUser?.shopId) {
 		return res.status(400).send({ message: 'User already has a Shop' });
 	}
 
-	const shopData = new ShopCollection({
-		...shop,
+	const saveShopData = new ShopCollection({
+		...shopData,
 		limit: 3,
 	});
 
-	// Save the shop to the database
-	const result = await shopData.save();
+	// Save the shop data to the database
+	const result = await saveShopData.save();
 	console.log(result._id);
 
 	// Update the user information
-	const updatedUser = await User.findOneAndUpdate(
-		{ email: userEmail },
+	await UsersCollection.findOneAndUpdate(
+		{ email },
 		{
 			$set: {
 				role: 'manager',
 				shopId: result?._id,
-				shopName: shop.shopName,
-				shopLogo: shop.shopLogo,
+				shopName: shopData.shopName,
+				shopLogo: shopData.shopLogo,
 			},
 		},
 		{ new: true },
@@ -55,22 +57,10 @@ const updateLimit = async (req, res) => {
 	const limitData = req.body;
 
 	try {
-		const adminUser = await User.findOne({ role: 'admin' });
-		if (!adminUser) {
-			return res.status(404).json({ error: 'Admin user not found' });
-		}
-		const hasIncome = adminUser.income !== undefined;
 		// Increment the income property
-		const updatedAdminUser = await User.findOneAndUpdate(
+		const updatedAdminUser = await UsersCollection.findOneAndUpdate(
 			{ role: 'admin' },
-			{
-				$inc: {
-					income: hasIncome ? limitData?.price : 0,
-				},
-				$setOnInsert: {
-					income: hasIncome ? undefined : limitData?.price,
-				},
-			},
+			{ $inc: { income: limitData?.price } },
 			{ upsert: true, new: true },
 		);
 
@@ -78,14 +68,18 @@ const updateLimit = async (req, res) => {
 			return res.status(404).json({ error: 'Admin user not found' });
 		}
 
-		// update limit
+		// Set income if it doesn't exist
+		if (updatedAdminUser.income === undefined) {
+			updatedAdminUser.income = limitData?.price;
+		}
+
+		// Save the  with the new income value
+		await updatedAdminUser.save();
+
+		// Update limit
 		const updatedShop = await ShopCollection.findOneAndUpdate(
-			{ shopOwnerEmail: email },
-			{
-				$inc: {
-					limit: limitData?.limit,
-				},
-			},
+			{ email: email },
+			{ $inc: { limit: limitData?.limit } },
 			{ new: true },
 		);
 

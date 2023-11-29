@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const UsersCollection = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 const createToken = async (req, res) => {
@@ -26,10 +26,29 @@ const clearCookie = async (req, res) => {
 	}
 };
 
+// Get user Role
+const getRole = async (req, res) => {
+	const email = req.params.email;
+	const result = await UsersCollection.findOne({ email: email });
+	res.send(result);
+};
+
 //  Get All User Data
 const getUser = async (req, res) => {
-	const result = await User.find();
-	res.send(result);
+	try {
+		const page = parseInt(req.query.page) || 0;
+		const limit = parseInt(req.query.limit) || 10;
+
+		const result = await UsersCollection.find()
+			.skip(page * limit)
+			.limit(limit)
+			.exec();
+
+		const count = await UsersCollection.countDocuments();
+		res.status(200).json({ result, count });
+	} catch (error) {
+		res.status(500).json({ error: 'Server error' });
+	}
 };
 
 // Save User Data in Database
@@ -38,10 +57,10 @@ const saveUser = async (req, res) => {
 	const user = req.body;
 	const query = { email: email };
 	const options = { upsert: true };
-	const isExist = await User.findOne(query);
+	const isExist = await UsersCollection.findOne(query);
 	if (isExist) {
 		if (user?.status === 'Requested') {
-			const result = await User.updateOne(
+			const result = await UsersCollection.updateOne(
 				query,
 				{
 					$set: user,
@@ -53,20 +72,13 @@ const saveUser = async (req, res) => {
 			return res.send(isExist);
 		}
 	}
-	const result = await User.updateOne(
+	const result = await UsersCollection.updateOne(
 		query,
 		{
 			$set: { ...user, timestamp: new Date() },
 		},
 		options,
 	);
-	res.send(result);
-};
-
-// Get user Role
-const getRole = async (req, res) => {
-	const email = req.params.email;
-	const result = await User.findOne({ email: email });
 	res.send(result);
 };
 

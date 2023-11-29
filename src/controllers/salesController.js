@@ -11,15 +11,16 @@ const allSales = async (req, res) => {
 
 // Get Manager Sales collection by pagination
 const managerSales = async (req, res) => {
+	const email = req.params.email;
 	const page = parseInt(req.query.page);
 	const limit = parseInt(req.query.limit);
 
-	const result = await SalesCollection.find()
+	const result = await SalesCollection.find({ userEmail: email })
 		.skip(page * limit)
 		.limit(limit)
 		.exec();
 
-	const saleCount = await SalesCollection.countDocuments();
+	const saleCount = await SalesCollection.countDocuments({ userEmail: email });
 	res.send({ result, saleCount });
 };
 
@@ -35,7 +36,6 @@ const saveSales = async (req, res) => {
 
 		const productId = new mongoose.Types.ObjectId(salesData?.productId);
 		const foundProduct = await ProductCollection.findById(productId);
-		console.log('first', foundProduct);
 
 		if (!foundProduct) {
 			return res.status(404).send({ error: 'Product not found' });

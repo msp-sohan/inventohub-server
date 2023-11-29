@@ -25,6 +25,7 @@ const productRoutes = require('./src/routes/productRoutes');
 const checkoutRoutes = require('./src/routes/checkoutRoutes');
 const salesRoutes = require('./src/routes/salesRoutes');
 const paymentRoutes = require('./src/routes/paymentRoutes');
+const allSalesRoutes = require('./src/routes/allSaleRouts');
 // Use All Routes
 app.use('/', authRoutes);
 app.use('/', shopRoutes);
@@ -32,6 +33,7 @@ app.use('/', productRoutes);
 app.use('/', checkoutRoutes);
 app.use('/', salesRoutes);
 app.use('/', paymentRoutes);
+app.use('/', allSalesRoutes);
 
 // Check the Server Up or Down
 app.get('/', (req, res) => {

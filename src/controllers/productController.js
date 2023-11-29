@@ -1,5 +1,5 @@
 const ProductCollection = require('../models/Product');
-const Shop = require('../models/Shop');
+const ShopCollection = require('../models/Shop');
 const mongoose = require('mongoose');
 
 // Get All Product count
@@ -14,20 +14,19 @@ const getAllProduct = async (req, res) => {
 	res.send(result);
 };
 
-// Save Droduct to database
+// Save Product to database
 const saveProduct = async (req, res) => {
+	const productData = req.body;
 	try {
-		const productData = req.body;
-
 		// Find the shop
-		const shopInfo = await Shop.findOne({ shopOwnerEmail: productData?.userEmail });
+		const shopInfo = await ShopCollection.findOne({ email: productData?.userEmail });
 		const productInfo = await ProductCollection.find({ userEmail: productData?.userEmail });
 
 		if (!shopInfo) {
 			return res.status(404).send({ error: 'Shop not found' });
 		}
 
-		// Check if the shop has reached its product limit
+		// Check  product limit
 		if (productInfo?.length >= shopInfo.limit) {
 			return res.status(400).send({ error: 'Product limit reached for this shop' });
 		}
@@ -36,9 +35,9 @@ const saveProduct = async (req, res) => {
 		const taxPercentage = 7.5;
 		const profitPercentage = productData?.profitMargin;
 		const sellingPrice =
-			productData.productionCost +
-			(productData.productionCost * taxPercentage) / 100 +
-			(productData.productionCost * profitPercentage) / 100;
+			productData.productCost +
+			(productData.productCost * taxPercentage) / 100 +
+			(productData.productCost * profitPercentage) / 100;
 
 		// Create a new product
 		const newProduct = new ProductCollection({
@@ -52,8 +51,6 @@ const saveProduct = async (req, res) => {
 
 		// Save the product to the database
 		const savedProduct = await newProduct.save();
-		console.log(savedProduct);
-
 		res.status(200).send(savedProduct);
 	} catch (error) {
 		console.error('Error saving product:', error);
@@ -77,7 +74,7 @@ const updateProduct = async (req, res) => {
 					productName: updatedProductData?.productName,
 					productQuantity: updatedProductData?.productQuantity,
 					productLocation: updatedProductData?.productLocation,
-					productionCost: updatedProductData?.productionCost,
+					productCost: updatedProductData?.productCost,
 					profitMargin: updatedProductData?.profitMargin,
 					discount: updatedProductData?.discount,
 					productDescription: updatedProductData?.productDescription,

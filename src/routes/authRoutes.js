@@ -1,5 +1,7 @@
 const express = require('express');
 const authController = require('../controllers/authController');
+const verifyAdmin = require('../middleware/verifyAdmin');
+const verifyToken = require('../middleware/verifyToken');
 
 const router = express.Router();
 
@@ -8,7 +10,7 @@ router.post('/jwt', authController.createToken);
 // Logout - clear cookie
 router.get('/logout', authController.clearCookie);
 // Ger All User Data
-router.get('/users', authController.getUser);
+router.get('/users', verifyToken, verifyAdmin, authController.getUser);
 // Save User Data
 router.put('/users/:email', authController.saveUser);
 
