@@ -1,5 +1,15 @@
 const UsersCollection = require('../models/User');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const corsOptions = {
+	origin: ['http://localhost:5173', 'https://inventohub.netlify.app'],
+	credentials: true,
+	optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 const createToken = async (req, res) => {
 	const user = req.body;
@@ -8,6 +18,7 @@ const createToken = async (req, res) => {
 	});
 	res.cookie('token', token, {
 		httpOnly: true,
+		maxAge: 365 * 24 * 60 * 60 * 1000,
 		secure: process.env.NODE_ENV === 'production',
 		sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
 	}).send({ success: true });
