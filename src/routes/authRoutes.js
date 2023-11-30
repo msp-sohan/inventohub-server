@@ -10,7 +10,7 @@ router.post('/jwt', authController.createToken);
 // Logout - clear cookie
 router.get('/logout', authController.clearCookie);
 // Ger All User Data
-router.get('/users', verifyToken, verifyAdmin, authController.getUser);
+router.get('/users', verifyToken, authController.getUser);
 // Save User Data
 router.put('/users/:email', authController.saveUser);
 

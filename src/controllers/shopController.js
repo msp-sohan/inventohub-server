@@ -4,7 +4,7 @@ const UsersCollection = require('../models/User');
 // Get All Shops
 const getAllShop = async (req, res) => {
 	const email = req.query.email;
-	console.log(email);
+
 	try {
 		let query = {};
 
@@ -37,7 +37,6 @@ const saveShop = async (req, res) => {
 
 	// Save the shop data to the database
 	const result = await saveShopData.save();
-	console.log(result._id);
 
 	// Update the user information
 	await UsersCollection.findOneAndUpdate(
@@ -94,7 +93,6 @@ const updateLimit = async (req, res) => {
 
 		res.status(200).send(updatedShop);
 	} catch (error) {
-		console.error('Error updating shop limit:', error);
 		res.status(500).send({ error: 'Server error' });
 	}
 };

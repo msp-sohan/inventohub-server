@@ -43,7 +43,6 @@ const managerAllSales = async (req, res) => {
 
 		res.send({ result: paginateData, totalProductCount: totalProductCount[0]?.count || 0 });
 	} catch (error) {
-		console.error('Error fetching manager all sales:', error);
 		res.status(500).json({ error: 'Server error' });
 	}
 };
@@ -83,7 +82,6 @@ const saveSaleAndUpdate = async (req, res) => {
 		const savedSale = await newSale.save();
 		res.status(200).json({ success: true, savedSale });
 	} catch (error) {
-		console.error('Error updating products:', error);
 		res.status(500).json({ error: 'Server error' });
 	}
 };

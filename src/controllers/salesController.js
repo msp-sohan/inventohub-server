@@ -56,7 +56,6 @@ const saveSales = async (req, res) => {
 
 		res.status(200).send({ savedSale, clearCheckout });
 	} catch (error) {
-		console.error('Error saving Sales:', error);
 		res.status(500).json({ error: 'Server error' });
 	}
 };

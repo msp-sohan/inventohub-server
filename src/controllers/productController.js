@@ -53,7 +53,6 @@ const saveProduct = async (req, res) => {
 		const savedProduct = await newProduct.save();
 		res.status(200).send(savedProduct);
 	} catch (error) {
-		console.error('Error saving product:', error);
 		res.status(500).json({ error: 'Server error' });
 	}
 };
@@ -61,7 +60,6 @@ const saveProduct = async (req, res) => {
 // Update the product data
 const updateProduct = async (req, res) => {
 	const productId = req.params.id;
-	console.log(productId);
 	try {
 		const objectId = new mongoose.Types.ObjectId(productId);
 		const updatedProductData = req.body;
@@ -73,7 +71,6 @@ const updateProduct = async (req, res) => {
 			(updatedProductData.productCost * taxPercentage) / 100 +
 			(updatedProductData.productCost * profitPercentage) / 100;
 
-		console.log(updatedSellingPrice);
 		const updatedProduct = await ProductCollection.findOneAndUpdate(
 			{ _id: objectId },
 			{
@@ -92,7 +89,6 @@ const updateProduct = async (req, res) => {
 			{ new: true },
 		);
 
-		console.log(updatedProduct);
 		res.status(200).send(updatedProduct);
 	} catch (error) {
 		res.status(500).json({ error: 'Server error' });

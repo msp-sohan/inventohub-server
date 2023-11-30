@@ -2,7 +2,6 @@ const CheckoutCollection = require('../models/checkout');
 
 const getCheckoutData = async (req, res) => {
 	const email = req?.params?.email;
-	console.log(email);
 	const result = await CheckoutCollection.find({ userEmail: email });
 	res.send(result);
 };
@@ -36,7 +35,6 @@ const saveCheckout = async (req, res) => {
 			res.send(savedProduct);
 		}
 	} catch (error) {
-		console.error('Error saving checkout data:', error);
 		res.status(500).json({ error: 'Server error' });
 	}
 };

@@ -3,7 +3,6 @@ const UsersCollection = require('../models/User');
 const verifyAdmin = async (req, res, next) => {
 	const email = req.user.email;
 	const query = { email: email };
-	console.log(email);
 	const user = await UsersCollection.findOne(query);
 	const isAdmin = user?.role === 'admin';
 	if (!isAdmin) {

@@ -21,8 +21,8 @@ const clearCookie = async (req, res) => {
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
 		}).send({ success: true });
-	} catch (err) {
-		res.status(500).send(err);
+	} catch (error) {
+		res.status(500).send(error);
 	}
 };
 
