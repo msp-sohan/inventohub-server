@@ -6,10 +6,15 @@ const getAllShop = async (req, res) => {
 	const email = req.query.email;
 	console.log(email);
 	try {
-		const result = await ShopCollection.find();
+		let query = {};
+
+		if (email) {
+			query = { email: email };
+		}
+
+		const result = await ShopCollection.find(query);
 		res.send(result);
 	} catch (error) {
-		console.error('Error getting shops:', error);
 		res.status(500).json({ error: 'Server error' });
 	}
 };

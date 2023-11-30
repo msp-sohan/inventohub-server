@@ -58,15 +58,22 @@ const saveProduct = async (req, res) => {
 	}
 };
 
-// Update a Product in the database
+// Update the product data
 const updateProduct = async (req, res) => {
+	const productId = req.params.id;
+	console.log(productId);
 	try {
-		const productId = req.params.id;
 		const objectId = new mongoose.Types.ObjectId(productId);
-
 		const updatedProductData = req.body;
 
-		// Update the product data
+		const taxPercentage = 7.5;
+		const profitPercentage = updatedProductData?.profitMargin;
+		const updatedSellingPrice =
+			updatedProductData.productCost +
+			(updatedProductData.productCost * taxPercentage) / 100 +
+			(updatedProductData.productCost * profitPercentage) / 100;
+
+		console.log(updatedSellingPrice);
 		const updatedProduct = await ProductCollection.findOneAndUpdate(
 			{ _id: objectId },
 			{
@@ -79,15 +86,15 @@ const updateProduct = async (req, res) => {
 					discount: updatedProductData?.discount,
 					productDescription: updatedProductData?.productDescription,
 					productImage: updatedProductData?.productImage,
+					sellingPrice: updatedSellingPrice,
 				},
 			},
 			{ new: true },
 		);
-		console.log(updatedProduct);
 
+		console.log(updatedProduct);
 		res.status(200).send(updatedProduct);
 	} catch (error) {
-		console.error('Error updating product:', error);
 		res.status(500).json({ error: 'Server error' });
 	}
 };
