@@ -26,6 +26,7 @@ const checkoutRoutes = require('./src/routes/checkoutRoutes');
 const salesRoutes = require('./src/routes/salesRoutes');
 const paymentRoutes = require('./src/routes/paymentRoutes');
 const allSalesRoutes = require('./src/routes/allSaleRouts');
+
 // Use All Routes
 app.use('/', authRoutes);
 app.use('/', shopRoutes);
